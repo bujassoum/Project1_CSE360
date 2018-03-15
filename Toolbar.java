@@ -25,7 +25,10 @@ public class Toolbar extends JPanel implements ActionListener{
 	JFileChooser chooser = new JFileChooser();
 	private String counter ="";
 	private FormPanel pannel;
+	private FormPanel lp;
     int count;
+    int linenumber;
+
 
 	
 	File file = null;
@@ -131,9 +134,26 @@ public class Toolbar extends JPanel implements ActionListener{
 					        count++;
 					    }
 					   
-					System.out.println("Number of words: " + count);
+					//System.out.println("Number of words: " + count);
 					pannel.updateWordProcessedField (String.valueOf(count));
+					
+					FileReader fr = new FileReader(file);
+	    		    LineNumberReader lnr = new LineNumberReader(fr);
+
+
+	    	            while (lnr.readLine() != null){
+	    	        	linenumber++;
+	    	            }
+
+	    	            System.out.println("Total number of lines : " + linenumber);
+	    	            
+	    	            lp.updateLinesProcessedField(String.valueOf(linenumber));
+	    	            
+	    	            lnr.close();
 					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -165,5 +185,10 @@ public class Toolbar extends JPanel implements ActionListener{
 	
 	public void setPanel (FormPanel panel) {
 		pannel = panel;
+	}
+	public void setLine (FormPanel lp){
+		
+		this.lp = lp;
+		
 	}
 }
