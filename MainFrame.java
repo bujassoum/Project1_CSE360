@@ -45,6 +45,7 @@ public class MainFrame extends JFrame {
 		
 		toolBar.setPanel (formPanel);
 		toolBar.setLine(formPanel);
+		toolBar.setBlankline(formPanel);
 		
 		
 	
@@ -53,7 +54,7 @@ public class MainFrame extends JFrame {
 		add(textPanel1, BorderLayout.EAST);
 		add(textPanel2, BorderLayout.WEST);
 		
-		setSize(900, 800);
+		setSize(1000, 1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		
