@@ -13,7 +13,7 @@ public class TextPanel extends javax.swing.JPanel {
 		Dimension dim = getPreferredSize();
 		
 		//System.out.println(dim);
-			dim.width =300;
+			dim.width =400;
 			setPreferredSize(dim);
 			//System.out.println(dim);
 		
