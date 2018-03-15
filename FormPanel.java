@@ -44,6 +44,11 @@ public class FormPanel extends JPanel{
 		
 	}
 
+	public void updateBlankLineField(String text){
+		
+		blankLineField.setText(text);
+		blankLineField.updateUI();
+	}
 
 	public FormPanel(){
 		
