@@ -35,6 +35,14 @@ public class FormPanel extends JPanel{
 		wordProcessedField.setText(text);
 		wordProcessedField.updateUI();
 	}
+	
+	public void updateLinesProcessedField (String text){
+		
+		linesProcessedField.setText(text);
+		linesProcessedField.updateUI();
+		
+		
+	}
 
 
 	public FormPanel(){
@@ -44,7 +52,7 @@ public class FormPanel extends JPanel{
 		Dimension dim = getPreferredSize();
 		
 		//System.out.println(dim);
-			dim.width =100;
+			dim.width =200;
 			setPreferredSize(dim);
 			//System.out.println(dim);
 
