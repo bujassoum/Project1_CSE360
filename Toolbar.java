@@ -6,11 +6,6 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -20,14 +15,18 @@ public class Toolbar extends JPanel implements ActionListener{
 	private JButton select;
 	private JButton format;
 	private JButton save;
-	private String line = null;
-	private String temp= null;
+	private String line;
+	private String temp;
 	JFileChooser chooser = new JFileChooser();
 	private String counter ="";
 	private FormPanel pannel;
 	private FormPanel lp;
+	private FormPanel blankLines;
     int count;
-    int linenumber;
+    int lines;
+	//BufferedReader output = null;
+	BufferedReader input = null;
+	PrintWriter output = null;
 
 
 	
@@ -74,35 +73,35 @@ public class Toolbar extends JPanel implements ActionListener{
 			
 			if(textListener != null){
 				
-				int returnVal = chooser.showOpenDialog(this);
 				
+				// open a file
+				int fileVal = chooser.showOpenDialog(this);
 				
-				if(returnVal == JFileChooser.APPROVE_OPTION)     
-				  file = chooser.getSelectedFile();    
-				
+				if(fileVal == JFileChooser.APPROVE_OPTION)  {   
+					file = chooser.getSelectedFile();    
+				}
 
 			
-				
-				BufferedReader in = null;
+				// display the contant on the file 
 				try {
-					in = new BufferedReader(new FileReader(file));
+					input = new BufferedReader(new FileReader(file));
 				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
+
 					e1.printStackTrace();
 				}
 				
 				try {
-					line = in.readLine();
+					line = input.readLine();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+
 					e1.printStackTrace();
 				}
 				while(line != null){
 				textListener.textEmitted1(line + "\n");
-				System.out.println(line + "\n");
+				//System.out.println(line + "\n");
 				temp = line;
 				  try {
-					line = in.readLine();
+					line = input.readLine();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -126,30 +125,48 @@ public class Toolbar extends JPanel implements ActionListener{
 				
 				//System.out.println(line);
 				if ( temp != null ){
+					try {
+						output = new PrintWriter(new FileWriter("result.txt"));
+						
+						
+						
+						//output = new BufferedReader(new FileReader("result.txt"));
+					} catch (FileNotFoundException e2) {
+						
+						e2.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
-					try(Scanner sc = new Scanner(new FileInputStream(file))){    // edit this 
+					// counting how many words in the file
+					try(Scanner sc = new Scanner(new FileInputStream(file))){    
 					    count=0;
+					    
 					    while(sc.hasNext()){
+					    	
 					        sc.next();
+					        
 					        count++;
 					    }
 					   
 					//System.out.println("Number of words: " + count);
+					    // Display number of words in the app
 					pannel.updateWordProcessedField (String.valueOf(count));
 					
 					FileReader fr = new FileReader(file);
-	    		    LineNumberReader lnr = new LineNumberReader(fr);
+	    		    LineNumberReader linenumber = new LineNumberReader(fr);
 
 
-	    	            while (lnr.readLine() != null){
-	    	        	linenumber++;
+	    	            while (linenumber.readLine() != null){
+	    	        	lines++;
 	    	            }
 
-	    	            System.out.println("Total number of lines : " + linenumber);
+	    	            //System.out.println("Total number of lines : " + lines);
 	    	            
-	    	            lp.updateLinesProcessedField(String.valueOf(linenumber));
+	    	            lp.updateLinesProcessedField(String.valueOf(lines));
 	    	            
-	    	            lnr.close();
+	    	            linenumber.close();
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -158,9 +175,94 @@ public class Toolbar extends JPanel implements ActionListener{
 						e1.printStackTrace();
 					}
 					
+					try {
+						input = new BufferedReader(new FileReader(file));
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
-					//counter = (String)count;
-					//textListener.textEmitted( temp+"\n");
+					try {
+						line = input.readLine();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					
+					String tempText = line;
+					System.out.println(tempText);
+
+					////////
+					
+					
+					
+					
+				///////// count how many blank line 
+					
+					//final BufferedReader br = new BufferedReader(new FileReader(file));
+					//String line;
+					int empty = 0;
+					try {
+						while ((line = input.readLine()) != null) {
+						  if (line.trim().isEmpty()) {
+						    empty++;
+						  }
+						}
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+    	            blankLines.updateBlankLineField(String.valueOf(empty));
+
+					//System.out.println(empty);
+					
+					//System.out.println(tempText);
+
+					
+					///////////////////
+					
+					
+					//////// print the text formatted after deleting the blank lines.
+					try {
+						input = new BufferedReader(new FileReader(file));
+					} catch (FileNotFoundException e1) {
+
+						e1.printStackTrace();
+					}
+					
+					try {
+						line = input.readLine();
+					} catch (IOException e1) {
+
+						e1.printStackTrace();
+					}
+					while(line != null){
+						if (!line.isEmpty())
+						   {
+						      output.println(line);
+						      
+						      System.out.println(line);
+
+						      textListener.textEmitted(line+"\n");
+						     
+						   }
+
+					  try {
+							line = input.readLine();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						}
+				/////////////////////////////////////////////////////
+					
+				 
+
+					
+					
+					
+					
 					
 				}
 				
@@ -189,6 +291,12 @@ public class Toolbar extends JPanel implements ActionListener{
 	public void setLine (FormPanel lp){
 		
 		this.lp = lp;
+		
+	}
+	public void setBlankline (FormPanel blankLines){
+		
+		this.blankLines = blankLines;
+		
 		
 	}
 }
