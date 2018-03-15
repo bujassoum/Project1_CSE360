@@ -44,6 +44,7 @@ public class MainFrame extends JFrame {
 		});
 		
 		toolBar.setPanel (formPanel);
+		toolBar.setLine(formPanel);
 		
 		
 	
