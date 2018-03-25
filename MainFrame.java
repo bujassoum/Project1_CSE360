@@ -40,12 +40,35 @@ public class MainFrame extends JFrame {
 				textPanel2.appendText(text);				
 			}
 			
+			public void clearText()
+			{
+				textPanel2.clearText();
+			}
+			
+			public void clearOutput()
+			{
+				textPanel1.clearText();
+			}
+			
+			public String returnText()
+			{
+				return textPanel2.returnValue();
+			}
+			
+			public String returnFormatted()
+			{
+				return textPanel1.returnValue();
+			}
+			
 			
 		});
 		
 		toolBar.setPanel (formPanel);
 		toolBar.setLine(formPanel);
 		toolBar.setBlankline(formPanel);
+		toolBar.setAveLineLength(formPanel);
+		toolBar.setWordsPerLine(formPanel);
+		toolBar.setTotalSpaces(formPanel);
 		
 		
 	
@@ -54,7 +77,7 @@ public class MainFrame extends JFrame {
 		add(textPanel1, BorderLayout.EAST);
 		add(textPanel2, BorderLayout.WEST);
 		
-		setSize(1000, 1000);
+		setSize(1050, 1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		

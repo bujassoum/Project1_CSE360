@@ -32,4 +32,14 @@ public class TextPanel extends javax.swing.JPanel {
 	
 	}
 	
+	public void clearText()
+	{
+		textArea.setText("");
+	}
+	
+	public String returnValue()
+	{
+		return textArea.getText();
+	}
+	
 }

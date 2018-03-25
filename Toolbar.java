@@ -1,27 +1,51 @@
 package project1;
 
 import java.io.*;
-
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Scanner;
+import java.util.*;
 
 import javax.swing.*;
 
 public class Toolbar extends JPanel implements ActionListener{
 	//JFileChooser chooser = new JFileChooser();
+	
 	private JButton select;
 	private JButton format;
 	private JButton save;
+	
+	private final JLabel saved;
+	
 	private String line;
+	private String linetemp;
 	private String temp;
+	private String formatted;
+	
 	JFileChooser chooser = new JFileChooser();
+	
 	private String counter ="";
+	
 	private FormPanel pannel;
 	private FormPanel lp;
 	private FormPanel blankLines;
+	private FormPanel aveLineLength;
+	private FormPanel wordsPerLine;
+	private FormPanel totalSpaces;
+	
+	
+	private JRadioButton left;
+	private JRadioButton right;
+	private JRadioButton full;
+	private JRadioButton singleSpace;
+	private JRadioButton doubleSpace;
+	
+	private ButtonGroup justification;
+	private ButtonGroup spacing;
+	
     int count;
     int lines;
 	//BufferedReader output = null;
@@ -40,17 +64,46 @@ public class Toolbar extends JPanel implements ActionListener{
 		
 		select = new JButton("Select file");
 		format = new JButton("Format");
-		save = new JButton ("save file");
+		save = new JButton ("Save file");
+		
+		left = new JRadioButton("Left");
+		left.setSelected(true);
+		right = new JRadioButton("Right");
+		full = new JRadioButton("Full");
+		singleSpace = new JRadioButton("Single");
+		singleSpace.setSelected(true);
+		doubleSpace = new JRadioButton("Double");
+		
+		justification = new ButtonGroup();
+		spacing = new ButtonGroup();
+		
+		justification.add(left);
+		justification.add(right);
+		justification.add(full);
+		spacing.add(singleSpace);
+		spacing.add(doubleSpace);
+		
+		saved = new JLabel ("File saved");
+		saved.setVisible(false);
 		
 		select.addActionListener(this);
 		format.addActionListener(this);
 		save.addActionListener(this);
+		left.
 		
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		add(select);
 		add(format);
 		add(save);
+		add(saved);
+		add(new JSeparator(SwingConstants.VERTICAL));
+		add(left);
+		add(right);
+		add(full);
+		add(new JSeparator(SwingConstants.VERTICAL));
+		add(singleSpace);
+		add(doubleSpace);
 		
 		
 	}
@@ -73,6 +126,7 @@ public class Toolbar extends JPanel implements ActionListener{
 			
 			if(textListener != null){
 				
+				saved.setVisible(false);
 				
 				// open a file
 				int fileVal = chooser.showOpenDialog(this);
@@ -83,12 +137,16 @@ public class Toolbar extends JPanel implements ActionListener{
 
 			
 				// display the contant on the file 
+				
+				textListener.clearText();
 				try {
 					input = new BufferedReader(new FileReader(file));
 				} catch (FileNotFoundException e1) {
 
 					e1.printStackTrace();
 				}
+				
+				textListener.clearText();
 				
 				try {
 					line = input.readLine();
@@ -120,8 +178,7 @@ public class Toolbar extends JPanel implements ActionListener{
 			
 			if(textListener != null){
 				
-				
-				
+				textListener.clearOutput();
 				
 				//System.out.println(line);
 				if ( temp != null ){
@@ -219,9 +276,65 @@ public class Toolbar extends JPanel implements ActionListener{
 					
 					//System.out.println(tempText);
 
+    	            formatted = "";
+    	            linetemp = textListener.returnText();
+    	            linetemp = linetemp.replace("\n", " ").replace("\r", " ");
+    	            int length = linetemp.length();
+    	            int i = 0, j = 80, k = 0, l = 0, lastSpace = 0, lineSpacing = 1;
+    	            if (doubleSpace.isSelected())
+    	            	lineSpacing = 2;
+    	            
+    	            while (i < length)
+    	           	{
+    	            	for (i = k; i < j && i < length; i++)
+    	            	{
+    	            		if (linetemp.charAt(i) == ' ')
+    	            			lastSpace = i;
+    	            	}
+    	            	
+    	            	for (k = l; k < lastSpace; k++)
+    	            		formatted = formatted +  linetemp.charAt(k);
+    	            	
+    	            	for (int z = 0; z < lineSpacing; z++)
+    	            		formatted = formatted + "\n";
+    	            	l = k;
+    	            	j = lastSpace + 80;
+    	            }
+    	            
+    	            // average line length
+    	            float avegLineLength = 0, totalLines = 0;
+    	            
+    	            for (int m = 0; m < length; m++)
+    	            {
+    	            	if (formatted.charAt(m) == '\n')
+    	            		totalLines++;
+    	            }
+    	            
+    	            avegLineLength = (float)length / totalLines;
+					aveLineLength.updateAveLineLengthField(String.valueOf(avegLineLength));
 					
-					///////////////////
+					// average words per line
+					float avegWordsPerLine, words = 0;
+					for (int n = 0; n < length; n++)
+    	            {
+    	            	if (formatted.charAt(n) == ' ' && formatted.charAt(n+1) != ' ')
+    	            		words++;
+    	            }
 					
+					words++;
+    	            
+    	            avegWordsPerLine = words / (float) totalLines;
+					wordsPerLine.updateWordsPerLine(String.valueOf(avegWordsPerLine));
+					
+					// total spaces added
+					
+					int spaces = 0;
+					for (int o = 0; o < length; o++)
+					{
+						if (formatted.charAt(o) == ' ')
+							spaces++;
+					}
+					totalSpaces.updateTotalSpaces(String.valueOf(spaces));
 					
 					//////// print the text formatted after deleting the blank lines.
 					try {
@@ -237,16 +350,13 @@ public class Toolbar extends JPanel implements ActionListener{
 
 						e1.printStackTrace();
 					}
-					while(line != null){
-						if (!line.isEmpty())
-						   {
-						      output.println(line);
+				
+						      output.println(formatted);
 						      
-						      System.out.println(line);
+						      System.out.println(formatted);
 
-						      textListener.textEmitted(line+"\n");
-						     
-						   }
+						      textListener.textEmitted(formatted+"\n");
+					
 
 					  try {
 							line = input.readLine();
@@ -270,12 +380,37 @@ public class Toolbar extends JPanel implements ActionListener{
 				
 			}
 			
-		}
+		
 		if (clicked == save){
 			if(textListener != null){
-				
-			textListener.textEmitted("File Save\n");
-				
+			
+			saved.setVisible(true);
+			String temp = "";
+			
+			int fileVal = chooser.showSaveDialog(this);
+			
+			if(fileVal == JFileChooser.APPROVE_OPTION)  {   
+				try
+				{
+					BufferedWriter writer = new BufferedWriter(new FileWriter(chooser.getSelectedFile()));
+					for (int i = 0; i < formatted.length(); i++)
+					{
+						if (formatted.charAt(i) == '\n')
+						{
+							writer.write(temp);
+							writer.newLine();
+							temp = "";
+						}
+						else
+							temp = temp + formatted.charAt(i);
+						
+					}
+					writer.close();
+				} catch (IOException e4) {} 
+			}
+			
+			
+			
 			}
 		}
 		
@@ -297,6 +432,20 @@ public class Toolbar extends JPanel implements ActionListener{
 		
 		this.blankLines = blankLines;
 		
+	}
+	
+	public void setAveLineLength (FormPanel aveLineLength){
 		
+		this.aveLineLength = aveLineLength;
+		
+	}
+	public void setWordsPerLine (FormPanel wordsPerLine)
+	{
+		this.wordsPerLine = wordsPerLine;
+	}
+	
+	public void setTotalSpaces (FormPanel totalSpaces)
+	{
+		this.totalSpaces = totalSpaces;
 	}
 }

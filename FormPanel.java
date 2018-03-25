@@ -17,18 +17,21 @@ public class FormPanel extends JPanel{
 	private JLabel aveWord;
 	private JLabel linesProcessed;
 	private JLabel aveLine;
+	private JLabel totalSpaces;
 	
 	private JLabel wordProcessedField;
 	private JLabel blankLineField;
 	private JLabel aveWordField;
 	private JLabel linesProcessedField;
 	private JLabel aveLineField;
+	private JLabel totalSpacesField;
 	
 	private String word = "";
 	private String line = "";
 	private String lineRemoved = "";
 	private String avaregeWords = "";
 	private String avaregeLine = "";
+	private String totalSpacesTxt = "";
 
 
 	public void updateWordProcessedField (String text) {
@@ -49,7 +52,25 @@ public class FormPanel extends JPanel{
 		blankLineField.setText(text);
 		blankLineField.updateUI();
 	}
+	
+	public void updateAveLineLengthField(String text)
+	{
+		aveLineField.setText(text);
+		aveLineField.updateUI();
+	}
+	
+	public void updateWordsPerLine(String text)
+	{
+		aveWordField.setText(text);
+		aveWordField.updateUI();
+	}
 
+	public void updateTotalSpaces(String text)
+	{
+		totalSpacesField.setText(text);
+		totalSpacesField.updateUI();
+		
+	}
 	public FormPanel(){
 		
 		
@@ -62,12 +83,12 @@ public class FormPanel extends JPanel{
 			//System.out.println(dim);
 
 			
-			wordProcessed = new JLabel("word Processed: ");
-			
-			linesProcessed = new JLabel("Line Processed :");
-			aveWord = new JLabel ("Avarage Words/Line: ");
+			wordProcessed = new JLabel("Word Processed: ");
+			linesProcessed = new JLabel("Line Processed: ");
+			aveWord = new JLabel ("Average Words/Line: ");
 			blankLine = new JLabel ("Blank Line Removed: ");
-			aveLine = new JLabel ("Avarage Line Length: ");
+			aveLine = new JLabel ("Average Line Length: ");
+			totalSpaces = new JLabel ("Total Spaces Added: ");
 		
 			
 			
@@ -76,8 +97,7 @@ public class FormPanel extends JPanel{
 			blankLineField = new JLabel(lineRemoved);
 			aveWordField = new JLabel(avaregeWords);
 			aveLineField = new JLabel(avaregeLine);
-			
-			
+			totalSpacesField = new JLabel(totalSpacesTxt);
 		
 			
 			Border innerBorder = BorderFactory.createTitledBorder("statistics");
@@ -181,6 +201,23 @@ public class FormPanel extends JPanel{
 			gc.insets = new Insets(0, 0, 0, 0);
 			gc.anchor = GridBagConstraints.LINE_START;
 			add(aveLineField, gc);
+			
+			// fifth row
+			
+			gc.weightx = 0.1;
+			gc.weighty = 0.1;
+						
+			gc.gridy = 5;
+			gc.gridx = 0;
+			gc.insets = new Insets(0, 0, 0, 5);
+			gc.anchor = GridBagConstraints.LINE_END;
+			add(totalSpaces, gc);
+						
+			gc.gridy =5;
+			gc.gridx = 1;
+			gc.insets = new Insets(0, 0, 0, 0);
+			gc.anchor = GridBagConstraints.LINE_START;
+			add(totalSpacesField, gc);
 			
 			
 
