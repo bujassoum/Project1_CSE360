@@ -19,11 +19,13 @@ public class Toolbar extends JPanel implements ActionListener{
 	private JButton save;
 	
 	private final JLabel saved;
+	private final JLabel chooseLineLength;
 	
 	private String line;
 	private String linetemp;
 	private String temp;
 	private String formatted;
+	private int lineLength;
 	
 	JFileChooser chooser = new JFileChooser();
 	
@@ -36,6 +38,7 @@ public class Toolbar extends JPanel implements ActionListener{
 	private FormPanel wordsPerLine;
 	private FormPanel totalSpaces;
 	
+	private JTextField inputLineLength;
 	
 	private JRadioButton left;
 	private JRadioButton right;
@@ -66,6 +69,7 @@ public class Toolbar extends JPanel implements ActionListener{
 		format = new JButton("Format");
 		save = new JButton ("Save file");
 		
+		
 		left = new JRadioButton("Left");
 		left.setSelected(true);
 		right = new JRadioButton("Right");
@@ -86,12 +90,14 @@ public class Toolbar extends JPanel implements ActionListener{
 		saved = new JLabel ("File saved");
 		saved.setVisible(false);
 		
+		chooseLineLength = new JLabel ("Line Length:");
+		inputLineLength = new JTextField ("80");
+		
 		select.addActionListener(this);
 		format.addActionListener(this);
 		save.addActionListener(this);
-		left.
 		
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+		left.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		add(select);
 		add(format);
@@ -104,7 +110,8 @@ public class Toolbar extends JPanel implements ActionListener{
 		add(new JSeparator(SwingConstants.VERTICAL));
 		add(singleSpace);
 		add(doubleSpace);
-		
+		add(chooseLineLength);
+		add(inputLineLength);
 		
 	}
 	
@@ -280,7 +287,7 @@ public class Toolbar extends JPanel implements ActionListener{
     	            linetemp = textListener.returnText();
     	            linetemp = linetemp.replace("\n", " ").replace("\r", " ");
     	            int length = linetemp.length();
-    	            int i = 0, j = 80, k = 0, l = 0, lastSpace = 0, lineSpacing = 1;
+    	            int i = 0, j = Integer.parseInt(inputLineLength.getText()), k = 0, l = 0, lastSpace = 0, lineSpacing = 1;
     	            if (doubleSpace.isSelected())
     	            	lineSpacing = 2;
     	            
@@ -292,13 +299,27 @@ public class Toolbar extends JPanel implements ActionListener{
     	            			lastSpace = i;
     	            	}
     	            	
-    	            	for (k = l; k < lastSpace; k++)
-    	            		formatted = formatted +  linetemp.charAt(k);
+    	            	
+    	            	if (right.isSelected())
+    	            	{
+    	            		for (int q = j; q > lastSpace; q--)
+    	            			formatted = formatted + " ";
+    	            		
+    	            		for (k = l; k < lastSpace; k++)
+        	            		formatted = formatted +  linetemp.charAt(k);
+    	            	}
+    	            	
+    	            
+    	            	else
+    	            	{
+    	            		for (k = l; k < lastSpace; k++)
+    	            			formatted = formatted +  linetemp.charAt(k);
+    	            	}
     	            	
     	            	for (int z = 0; z < lineSpacing; z++)
     	            		formatted = formatted + "\n";
     	            	l = k;
-    	            	j = lastSpace + 80;
+    	            	j = lastSpace + Integer.parseInt(inputLineLength.getText());
     	            }
     	            
     	            // average line length
