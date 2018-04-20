@@ -1,6 +1,7 @@
 package project1;
 
 import java.io.*;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -8,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Scanner;
 import java.util.*;
-
 import javax.swing.*;
 
 public class Toolbar extends JPanel implements ActionListener{
@@ -218,6 +218,7 @@ public class Toolbar extends JPanel implements ActionListener{
 					    // Display number of words in the app
 					pannel.updateWordProcessedField (String.valueOf(count));
 					
+					lines = 0;
 					FileReader fr = new FileReader(file);
 	    		    LineNumberReader linenumber = new LineNumberReader(fr);
 
@@ -284,36 +285,112 @@ public class Toolbar extends JPanel implements ActionListener{
 					//System.out.println(tempText);
 
     	            formatted = "";
+    	            String formattedTemp = "";
     	            linetemp = textListener.returnText();
     	            linetemp = linetemp.replace("\n", " ").replace("\r", " ");
-    	            int length = linetemp.length();
+    	            int length = linetemp.length(), charCount = 0, wordCount = 0;
     	            int i = 0, j = Integer.parseInt(inputLineLength.getText()), k = 0, l = 0, lastSpace = 0, lineSpacing = 1;
     	            if (doubleSpace.isSelected())
     	            	lineSpacing = 2;
+    	            
     	            
     	            while (i < length)
     	           	{
     	            	for (i = k; i < j && i < length; i++)
     	            	{
     	            		if (linetemp.charAt(i) == ' ')
+    	            		{
     	            			lastSpace = i;
+    	            		}
     	            	}
+    	            	
+    	            	
     	            	
     	            	
     	            	if (right.isSelected())
     	            	{
-    	            		for (int q = j; q > lastSpace; q--)
+    	            		for (k = l; k < lastSpace; k++)
+        	            		formattedTemp = formattedTemp +  linetemp.charAt(k);
+    	            		
+    	            		int h = formattedTemp.length();
+    	            		int counter = 0;
+    	            		
+    	            		for(h = formattedTemp.length(); h > 0; h--)
+    	            	    {
+    	            	      if( ! Character.isWhitespace( formattedTemp.charAt( h - 1)))
+    	            	         break;
+    	            	      else
+    	            	    	  counter++;
+    	            	    }
+    	            	    formattedTemp = formattedTemp.substring(0, h);
+    	            		
+    	            		for (int q = j + counter; q > lastSpace; q--)
     	            			formatted = formatted + " ";
     	            		
     	            		for (k = l; k < lastSpace; k++)
         	            		formatted = formatted +  linetemp.charAt(k);
+    	            		
+    	            		
+    	            		
+    	            	}
+    	            	
+    	            	else if (full.isSelected())
+    	            	{
+    	            		//formattedTemp = "";
+    	            		//for (k = l; k < lastSpace; k++)
+    	            		//	formattedTemp = formattedTemp +  linetemp.charAt(k);
+    	            		//formattedTemp = new FullJustification().full(formattedTemp, Integer.parseInt(inputLineLength.getText()));
+    	            		//formatted = formatted + formattedTemp;
+    	            		charCount = 0;
+    	            		wordCount = 0;
+    	            		formattedTemp = "";
+    	            		
+    	            		for (k = l; k < lastSpace; k++)
+        	            		formattedTemp = formattedTemp +  linetemp.charAt(k);
+    	            		
+    	            		formattedTemp.trim();
+    	            		
+    	            		for (int w = 0; w < formattedTemp.length() - 1; w++)
+    	            		{
+    	            			if (formattedTemp.charAt(w) != ' ')
+    	            				charCount++;
+    	            				if (formattedTemp.charAt(w+1) == ' ')
+    	            					wordCount++;
+    	            		}
+    	            		charCount++;
+    	            		int availablePadding = Integer.parseInt(inputLineLength.getText()) - charCount;
+    	            		int flag = availablePadding / wordCount;
+    	            		
+    	            		
+    	            		for (k = l; k < lastSpace; k++)
+    	            		{
+    	            			if (k != l || linetemp.charAt(k) != ' ')
+    	            			{
+	    	            			formatted = formatted +  linetemp.charAt(k);
+	    	            			if (linetemp.charAt(k) == ' ')
+	    	            			{
+	    	            				if (availablePadding != 0)
+	    	            				{
+	    	            					for (int y = 0; y < (availablePadding / wordCount); y++)
+	    	            					{
+	    	            						formatted = formatted + " ";
+	    	            						availablePadding--;
+	    	            					}
+	    	            				}
+	    	            			}
+    	            			}
+    	            		}
+    	            		
     	            	}
     	            	
     	            
     	            	else
     	            	{
     	            		for (k = l; k < lastSpace; k++)
-    	            			formatted = formatted +  linetemp.charAt(k);
+    	            		{
+    	            			if (k != l || linetemp.charAt(k) != ' ')
+    	            				formatted = formatted +  linetemp.charAt(k);
+    	            		}
     	            	}
     	            	
     	            	for (int z = 0; z < lineSpacing; z++)
@@ -323,28 +400,18 @@ public class Toolbar extends JPanel implements ActionListener{
     	            }
     	            
     	            // average line length
-    	            float avegLineLength = 0, totalLines = 0;
+    	            float avegLineLength = 0;
+    	              	            
+    	            String[] lines = formatted.split("\r\n|\r|\n");
     	            
-    	            for (int m = 0; m < length; m++)
-    	            {
-    	            	if (formatted.charAt(m) == '\n')
-    	            		totalLines++;
-    	            }
-    	            
-    	            avegLineLength = (float)length / totalLines;
+    	            avegLineLength = (float)length / (float)lines.length;
 					aveLineLength.updateAveLineLengthField(String.valueOf(avegLineLength));
 					
 					// average words per line
 					float avegWordsPerLine, words = 0;
-					for (int n = 0; n < length; n++)
-    	            {
-    	            	if (formatted.charAt(n) == ' ' && formatted.charAt(n+1) != ' ')
-    	            		words++;
-    	            }
-					
-					words++;
+					words = (float)count;
     	            
-    	            avegWordsPerLine = words / (float) totalLines;
+    	            avegWordsPerLine = words / (float) lines.length;
 					wordsPerLine.updateWordsPerLine(String.valueOf(avegWordsPerLine));
 					
 					// total spaces added
@@ -357,52 +424,54 @@ public class Toolbar extends JPanel implements ActionListener{
 					}
 					totalSpaces.updateTotalSpaces(String.valueOf(spaces));
 					
-					//////// print the text formatted after deleting the blank lines.
-					try {
-						input = new BufferedReader(new FileReader(file));
-					} catch (FileNotFoundException e1) {
-
-						e1.printStackTrace();
-					}
 					
-					try {
-						line = input.readLine();
-					} catch (IOException e1) {
-
-						e1.printStackTrace();
-					}
-				
-						      output.println(formatted);
-						      
-						      System.out.println(formatted);
-
-						      textListener.textEmitted(formatted+"\n");
 					
+			//////// print the text formatted after deleting the blank lines.
+								try {
+									input = new BufferedReader(new FileReader(file));
+								} catch (FileNotFoundException e1) {
 
-					  try {
-							line = input.readLine();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+									e1.printStackTrace();
+								}
+								
+								try {
+									line = input.readLine();
+								} catch (IOException e1) {
+
+									e1.printStackTrace();
+								}
+							
+									      output.println(formatted);
+									      
+									      System.out.println(formatted);
+
+									      textListener.textEmitted(formatted+"\n");
+								
+
+								  try {
+										line = input.readLine();
+									} catch (IOException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									}
+							/////////////////////////////////////////////////////
+								
+							 
+
+								
+								
+								
+								
+								
+							}
+							
+							
+							
 						}
-						}
-				/////////////////////////////////////////////////////
+						
 					
-				 
-
-					
-					
-					
-					
-					
-				}
-				
-				
-				
-			}
-			
-		
-		if (clicked == save){
+					if (clicked == save){
 			if(textListener != null){
 			
 			saved.setVisible(true);

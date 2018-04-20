@@ -1,6 +1,7 @@
 package project1;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.*;
 
@@ -23,6 +24,9 @@ public class TextPanel extends javax.swing.JPanel {
 		
 		//add(textArea, BorderLayout.CENTER);
 		add(new JScrollPane(textArea), BorderLayout.CENTER);
+		
+		Font newFont = new Font("Courier", Font.PLAIN, 11);
+		textArea.setFont(newFont);
 	
 	}
 	
